@@ -6,7 +6,12 @@ import { Card, CardActions, CardContent, Button, Typography, Box, Grid, TextFiel
 import { styled } from '@mui/material';
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
+import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import moment from 'moment';
+
+const Testtest = styled('div')({
+  
+})
 
 const CenterCard = styled(Card)({
   display: 'flex',
@@ -24,6 +29,11 @@ const Searcharea = styled('div')({
 const Highlow = styled('div')({
   display: 'flex',
   justifyContent: 'center', 
+})
+
+const Conditions = styled('div')({
+  display: 'flex',
+  justifyContent: 'center',
 })
 
 const darkTheme = createTheme({
@@ -90,6 +100,33 @@ function App() {
                   75°
                 </Typography>
               </Highlow>
+              <Conditions>
+                <WbSunnyIcon sx={{ fontSize: 65}}/>
+                <Typography sx={{ fontSize: 45, marginBottom: 0, marginLeft: 2, display: 'flex', justifyContent: 'center', }} color="text.primary" gutterBottom>
+                  Clear
+                </Typography>
+              </Conditions>
+              <Divider sx={{paddingBottom: 2}}></Divider>
+              <Testtest>
+                  <Grid sx={{ flexGrow: 1 }} container spacing={2}>
+                    <Grid item xs={12}>
+                        <Grid container justifyContent="center" spacing={2}>
+                            <Grid item>
+                                test
+                            </Grid>
+                            <Grid item>
+                                test
+                            </Grid>
+                            <Grid item>
+                                test
+                            </Grid>
+                            <Grid item>
+                                test
+                            </Grid>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+              </Testtest>
             </CardContent>
         </Card>
       </Grid>
