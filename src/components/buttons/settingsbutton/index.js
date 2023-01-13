@@ -8,8 +8,8 @@ const Settingsbutton = () => {
     <Button sx={{display: 'flex',
     justifyContent: 'center',
     flexDirection: 'column', color: 'lightgrey'}}>
-        <SettingsIcon fontSize='large'/>
-        <Typography>Weather</Typography>
+        <SettingsIcon fontSize='medium'/>
+        <Typography>Settings</Typography>
     </Button>
     </>
   )

@@ -31,12 +31,12 @@ const Submitbutton = styled(Button)({
 })
 
 const Primarycard = styled(Card)({
-    width: 650,
-    height: 1350,
+    // width: 650,
+    // height: 1350,
+    paddingTop: 0,
     display: 'flex',
     justifyContent: 'center',
     backgroundColor: 'rgb(11,18,47)',
-    borderRadius: '30px',
 })
 
 const Locationarea = styled(CardContent)({
@@ -45,8 +45,6 @@ const Locationarea = styled(CardContent)({
 })
 
 const Grid1 = styled(Grid) ({
-    width: '40vw',
-    paddingTop: '25px'
 })
 
 const Locationgrid = styled(Grid) ({
@@ -114,7 +112,7 @@ const Mainpage = () => {
     }
 
     return (
-    <Grid container justifyContent="center" sx={{paddingTop: 2}}>
+    <Grid container justifyContent="center">
         <Primarycard>
             <CardContent>
                 <Searcharea>
@@ -137,20 +135,20 @@ const Mainpage = () => {
                     <Grid1 container spacing={2}>
                         <Locationgrid item xs={9}>
                             <LocationOnIcon />
-                            <Typography color="lightgrey">{data.name ? <Typography>{data.name},  {data.sys?.country}</Typography> : null}</Typography>
+                            <Typography color="lightgrey">{data.name ? <Typography sx={{fontSize: '12px'}}>{data.name},  {data.sys?.country}</Typography> : null}</Typography>
                         </Locationgrid>
                         <Grid item xs={3}>
-                            <NightsStayIcon sx={{transform: 'scale(2.5)', float: 'right'}}/>
+                            <NightsStayIcon sx={{transform: 'scale(2.3)', float: 'right'}}/>
                         </Grid>
                     </Grid1>
                 </Locationarea>
                 <CardContent>
                     <Grid1 container spacing={2}>
                         <Weathergrid item xs={7}>
-                            <Typography>{data.main ? <Typography sx={{fontSize: '150px'}}>{Math.round(data.main?.temp)}°</Typography> : null}</Typography>
+                            <Typography>{data.main ? <Typography sx={{fontSize: '85px'}}>{Math.round(data.main?.temp)}°</Typography> : null}</Typography>
                             <Conditionbox>
-                                <WbSunnyIcon sx={{fontSize: '45px', paddingRight: '10px'}}/>
-                                <Typography variant="h4">{data.weather ? <Typography variant="h4">{data.weather[0].main}</Typography> : null}</Typography>
+                                <WbSunnyIcon sx={{fontSize: '25px', paddingRight: '10px'}}/>
+                                <Typography variant="h6">{data.weather ? <Typography variant="h6">{data.weather[0].main}</Typography> : null}</Typography>
                             </Conditionbox>
                             <Typography color="lightgrey">Last Updated: {moment().format('LT')}</Typography>
                         </Weathergrid>
@@ -158,71 +156,71 @@ const Mainpage = () => {
                         </Grid>
                     </Grid1>
                 </CardContent>
-                <Divider sx={{paddingBottom: 2}}></Divider>
+                <Divider sx={{paddingBottom: 0.5}}></Divider>
                 <Weatherdetails>
                     <Grid1 container spacing={2}>
                         <Grid item xs={6}>
-                            <Fourbox variant="h6">High:</Fourbox>
-                            <Typography>{data.main ? <Typography variant="h3">{Math.round(data.main?.temp_max)}°</Typography> : null}</Typography>
+                            <Fourbox variant="h6" sx={{fontSize: '12px'}}>High:</Fourbox>
+                            <Typography>{data.main ? <Typography variant="h6">{Math.round(data.main?.temp_max)}°</Typography> : null}</Typography>
                         </Grid>
                         <Grid item xs={6}>
-                            <Fourbox variant="h6">Low:</Fourbox>
-                            <Typography>{data.main ? <Typography variant="h3">{Math.round(data.main?.temp_min)}°</Typography> : null}</Typography>
+                            <Fourbox variant="h6" sx={{fontSize: '12px'}}>Low:</Fourbox>
+                            <Typography>{data.main ? <Typography variant="h6">{Math.round(data.main?.temp_min)}°</Typography> : null}</Typography>
                         </Grid>
                         <Grid item xs={6}>
-                            <Fourbox variant="h6">Chances of rain:</Fourbox>
-                            <Typography variant="h3">DATA</Typography>
+                            <Fourbox variant="h6" sx={{fontSize: '12px'}}>Chances of rain:</Fourbox>
+                            <Typography variant="h6">DATA</Typography>
                         </Grid>
                         <Grid item xs={6}>
-                            <Fourbox variant="h6">Precipitation:</Fourbox>
-                            <Typography variant="h3">DATA</Typography>
+                            <Fourbox variant="h6" sx={{fontSize: '12px'}}>Precipitation:</Fourbox>
+                            <Typography variant="h6">DATA</Typography>
                         </Grid>
                         <Grid item xs={6}>
-                            <Fourbox variant="h6">Wind:</Fourbox>
-                            <Typography>{data.main ? <Typography variant="h3">{Math.round(data.wind?.speed)} mph</Typography> : null}</Typography>
+                            <Fourbox variant="h6" sx={{fontSize: '12px'}}>Wind:</Fourbox>
+                            <Typography>{data.main ? <Typography variant="h6">{Math.round(data.wind?.speed)} mph</Typography> : null}</Typography>
                         </Grid>
                         <Grid item xs={6}>
-                            <Fourbox variant="h6">Humidity:</Fourbox>
-                            <Typography>{data.main ? <Typography variant="h3">{Math.round(data.main?.humidity)}&</Typography> : null}</Typography>
+                            <Fourbox variant="h6" sx={{fontSize: '12px'}}>Humidity:</Fourbox>
+                            <Typography>{data.main ? <Typography variant="h6">{Math.round(data.main?.humidity)}%</Typography> : null}</Typography>
                         </Grid>
                     </Grid1>
                 </Weatherdetails>
-                <Divider sx={{paddingBottom: 2}}></Divider>
+                <Divider sx={{paddingBottom: 1}}></Divider>
                 <Forecast>
                     <Grid1 container spacing={2}>
                         <Grid item xs={2}>
-                            <Fourbox variant="h6">High:</Fourbox>
-                            <Typography>{data.main ? <Typography variant="h5">{Math.round(data.main?.temp_max)}°</Typography> : null}</Typography>
+                            <Fourbox variant="h6" sx={{fontSize: '14px'}}>{(moment().format('h') - 1)}:{moment().format('m')}</Fourbox>
+                            <Typography>{data.main ? <Typography variant="h6">{Math.round(data.main?.temp)}°</Typography> : null}</Typography>
+                            <NightlightRoundIcon />
+                        </Grid>
+                        <Grid item xs={2} sx={{color: 'rgb(108,168,255)'}}>
+                            <Fourbox variant="h6" sx={{fontSize: '14px', color: 'rgb(108,168,255)'}}>{moment().format('h')}:{moment().format('m')}</Fourbox>
+                            <Typography>{data.main ? <Typography variant="h6">{Math.round(data.main?.temp)}°</Typography> : null}</Typography>
                             <NightlightRoundIcon />
                         </Grid>
                         <Grid item xs={2}>
-                            <Fourbox variant="h6">High:</Fourbox>
-                            <Typography>{data.main ? <Typography variant="h5">{Math.round(data.main?.temp_max)}°</Typography> : null}</Typography>
+                            <Fourbox variant="h6" sx={{fontSize: '14px'}}>{Number(moment().format('h'))+ 1}:{moment().format('m')}</Fourbox>
+                            <Typography>{data.main ? <Typography variant="h6">{Math.round(data.main?.temp)}°</Typography> : null}</Typography>
                             <NightlightRoundIcon />
                         </Grid>
                         <Grid item xs={2}>
-                            <Fourbox variant="h6">High:</Fourbox>
-                            <Typography>{data.main ? <Typography variant="h5">{Math.round(data.main?.temp_max)}°</Typography> : null}</Typography>
+                            <Fourbox variant="h6" sx={{fontSize: '14px'}}>{Number(moment().format('h'))+ 2}:{moment().format('m')}</Fourbox>
+                            <Typography>{data.main ? <Typography variant="h6">{Math.round(data.main?.temp)}°</Typography> : null}</Typography>
                             <NightlightRoundIcon />
                         </Grid>
                         <Grid item xs={2}>
-                            <Fourbox variant="h6">High:</Fourbox>
-                            <Typography>{data.main ? <Typography variant="h5">{Math.round(data.main?.temp_max)}°</Typography> : null}</Typography>
+                            <Fourbox variant="h6" sx={{fontSize: '14px'}}>{Number(moment().format('h'))+ 3}:{moment().format('m')}</Fourbox>
+                            <Typography>{data.main ? <Typography variant="h6">{Math.round(data.main?.temp)}°</Typography> : null}</Typography>
                             <NightlightRoundIcon />
                         </Grid>
                         <Grid item xs={2}>
-                            <Fourbox variant="h6">High:</Fourbox>
-                            <Typography>{data.main ? <Typography variant="h5">{Math.round(data.main?.temp_max)}°</Typography> : null}</Typography>
-                            <NightlightRoundIcon />
-                        </Grid>
-                        <Grid item xs={2}>
-                            <Fourbox variant="h6">High:</Fourbox>
-                            <Typography>{data.main ? <Typography variant="h5">{Math.round(data.main?.temp_max)}°</Typography> : null}</Typography>
+                            <Fourbox variant="h6" sx={{fontSize: '14px'}}>{Number(moment().format('h'))+ 4}:{moment().format('m')}</Fourbox>
+                            <Typography>{data.main ? <Typography variant="h5">{Math.round(data.main?.temp)}°</Typography> : null}</Typography>
                             <NightlightRoundIcon />
                         </Grid>
                     </Grid1>
                 </Forecast>
-                <Divider sx={{paddingBottom: 2}}></Divider>
+                <Divider sx={{paddingBottom: 1}}></Divider>
                 <CardContent>
                     <Grid1 container spacing={2}>
                         <Grid item xs={4}>

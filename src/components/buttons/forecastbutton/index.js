@@ -8,7 +8,7 @@ const Forecastbutton = () => {
     <Button sx={{display: 'flex',
     justifyContent: 'center',
     flexDirection: 'column', color: 'lightgrey'}}>
-        <ThunderstormIcon fontSize='large'/>
+        <ThunderstormIcon fontSize='medium'/>
         <Typography>Forecast</Typography>
     </Button>
     </>
