@@ -1,12 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import { Card, CardActions, CardContent, Button, Typography, Box, Grid, TextField, Divider } from '@mui/material';
 import { styled } from '@mui/material';
-import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
-import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
-import WbSunnyIcon from '@mui/icons-material/WbSunny';
-import NightsStayIcon from '@mui/icons-material/NightsStay';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import NightlightRoundIcon from '@mui/icons-material/NightlightRound';
 import Weatherbutton from '../buttons/weatherbutton';
 import Settingsbutton from '../buttons/settingsbutton';
 import Forecastbutton from '../buttons/forecastbutton';
@@ -89,18 +84,17 @@ const Fourbox = styled(Typography)({
 const Mainpage = () => {
     const [data, setData] = useState({})
     const [location, setLocation] = useState('');
-    const currentHour = moment().format('H');
 
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=imperial&appid=7402bcd03e0b88f6c75855bda3497673`
 
-    //const weatherIcon = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`   
+    const urltwo = `https://api.openweathermap.org/data/3.0/onecall?lat=${data.weather?data.coord?.lat:null}&lon=${data.weather?data.coord?.lon:null}&exclude=hourly,daily&appid=7402bcd03e0b88f6c75855bda3497673`
 
     const handleSearch = () => {
     axios.get(url).then((response) => {
         if (response?.data) {
         console.log({response})
         setData(response.data)
-        const { name, weather, main, sys} = response.data;
+        const { name, weather, main, sys, coord} = response.data;
         const { temp, temp_max, temp_min, clouds } = main;
         const { country } = sys;
         const { main : weathermain } = weather[0];
