@@ -7,7 +7,7 @@ const Weatherbutton = () => {
     <>
     <Button sx={{display: 'flex',
     justifyContent: 'center',
-    flexDirection: 'column', color: 'rgb(108,168,255)'}}>
+    flexDirection: 'column', color: 'rgb(108,168,255)', padding: 0,}}>
         <CloudIcon fontSize='medium'/>
         <Typography>Weather</Typography>
     </Button>

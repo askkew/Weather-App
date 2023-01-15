@@ -5,6 +5,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import Weatherbutton from '../buttons/weatherbutton';
 import Settingsbutton from '../buttons/settingsbutton';
 import Forecastbutton from '../buttons/forecastbutton';
+import AcUnitIcon from '@mui/icons-material/AcUnit';
 import moment from 'moment';
 import axios from 'axios';
 
@@ -27,9 +28,12 @@ const Submitbutton = styled(Button)({
 const Primarycard = styled(Card)({
     paddingTop: 0,
     display: 'flex',
-    justifyContent: 'center',
+    flexDirection: 'column',
+    // justifyContent: 'center',
+    alignItems: 'center',
+    // minHeight: 844,
     // backgroundColor: 'rgb(11,18,47)',
-    background: 'linear-gradient(to right bottom, darkcyan, blue)',
+    background: 'transparent',
 })
 
 const Locationarea = styled(CardContent)({
@@ -37,10 +41,9 @@ const Locationarea = styled(CardContent)({
     justifyContent: 'center',
     paddingTop: 0,
     paddingBottom: 0,
+    minHeight: '89px',
 })
 
-const Grid1 = styled(Grid) ({
-})
 
 const Locationgrid = styled(Grid) ({
     display: 'flex',
@@ -63,17 +66,19 @@ const Conditionbox = styled('div')({
 })
 
 const Forecast = styled(CardContent)({
-
+    //minHeight: '133.39px',
 })
 
 const Temperaturearea = styled(CardContent)({
     paddingTop: 0,
+    minHeight: '211px',
 })
 
 const Weatherdetails = styled(CardContent)({
     display: 'flex',
     justifyContent: 'center',
     flexDirection: 'column',
+    minHeight: '232.56px',
 })
 
 const Fourbox = styled(Typography)({
@@ -90,23 +95,42 @@ const Mainpage = () => {
     const urltwo = `https://api.openweathermap.org/data/3.0/onecall?lat=${data.weather?data.coord?.lat:null}&lon=${data.weather?data.coord?.lon:null}&exclude=hourly,daily&appid=7402bcd03e0b88f6c75855bda3497673`
 
     const handleSearch = () => {
-    axios.get(url).then((response) => {
-        if (response?.data) {
-        console.log({response})
-        setData(response.data)
-        const { name, weather, main, sys, coord} = response.data;
-        const { temp, temp_max, temp_min, clouds } = main;
-        const { country } = sys;
-        const { main : weathermain } = weather[0];
-        }
-    }).then(axios.get(urltwo).then((response) => {
+    axios.get(url)
+        .then((response) => { // first data fetch
 
-    }))
+            const newDataObj = {};
+            let coordinates = {};
+
+            if (response?.data) {
+                console.log({response})
+                const { name, weather, main, sys, coord } = response.data;
+                newDataObj[name] = name;
+                newDataObj[weather] = weather;
+                newDataObj[main] = main;
+                newDataObj[sys] = sys;
+                coordinates = coord;
+            } 
+            setData(response.data)
+            return { newDataObj, coordinates };
+        })
+        .then(({ newDataObj, coordinates }) => { // second data fetch
+            console.log({ newDataObj, coordinates })
+            const { lat, lon } = coordinates;
+            //const urltwo = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat ? lat : null}&lon=${lon ? lon : null}&exclude=hourly,daily&appid=f64b214ed3018053fa460454469c6fa9`
+            axios.get(urltwo).then((response2) => {
+                console.log({ response2 })
+            })
+        })
     }
+
+    const cityTemp = data.main?.temp;
+    const locationName = data?.name;
+    const countryName = data?.sys?.country
+    const weatherIcon = data?.weather && data?.weather[0]?.icon ? data?.weather[0]?.icon : <AcUnitIcon />;
 
     return (
     <Grid container justifyContent="center">
-        <Primarycard>
+        <Primarycard elevation={0}>
             <CardContent>
                 <Searcharea>
                     <TextField
@@ -123,116 +147,105 @@ const Mainpage = () => {
                         Submit
                     </Submitbutton>
                 </Searcharea>
-            <Divider sx={{paddingBottom: 2}}></Divider>
+                <Divider sx={{paddingBottom: 2}}></Divider>
                 <Locationarea>
-                    <Grid1 container spacing={2}>
+                    <Grid container spacing={2}>
                         <Locationgrid item xs={9}>
-                            <LocationOnIcon />
-                            <Typography color="lightgrey">{data.name ? <Typography sx={{fontSize: '12px'}}>{data.name},  {data.sys?.country}</Typography> : null}</Typography>
+                            <Typography>{data.main ? <LocationOnIcon /> : null}</Typography>
+                            <Typography color="lightgrey">{locationName ? <Typography sx={{fontSize: '12px'}}>{locationName},  {countryName}</Typography> : null}</Typography>
                         </Locationgrid>
                         <Grid item xs={3}>
-                            <Typography variant="h6">{data.weather ? <img style={{ width: 80, height: 80 }} src={(`http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`)}></img> : null}</Typography>
+                            <Typography variant="h6">{data.weather ? <img style={{ width: 80, height: 80 }} src={(`http://openweathermap.org/img/wn/${weatherIcon}@2x.png`)}></img> : null}</Typography>
                             {/* { Number(currentHour) >= 7 && Number(currentHour) <= 19 ? <WbSunnyIcon sx={{transform: 'scale(2)', float: 'right', color: 'goldenrod'}}/> : <NightsStayIcon sx={{transform: 'scale(2)', float: 'right', color: 'rgb(251, 225, 112)'}}/>} */}
                         </Grid>
-                    </Grid1>
+                    </Grid>
                 </Locationarea>
                 <Temperaturearea>
-                    <Grid1 container spacing={2}>
+                    <Grid container spacing={2}>
                         <Weathergrid item xs={7}>
-                            <Typography>{data.main ? <Typography sx={{fontSize: '85px'}}>{Math.round(data.main?.temp)}°</Typography> : null}</Typography>
+                            <Typography>{data.main ? <Typography sx={{fontSize: '85px'}}>{Math.round(cityTemp)}°</Typography> : null}</Typography>
                             <Conditionbox>
-                                {/* <Typography variant="h6">{data.weather ? <img src={(`http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`)}></img> : null}</Typography> */}
+                                {/* <Typography variant="h6">{data.weather ? <img src={(`http://openweathermap.org/img/wn/${weatherIcon}@2x.png`)}></img> : null}</Typography> */}
                                 <Typography variant="h6">{data.weather ? <Typography variant="h6">{data.weather[0].main}</Typography> : null}</Typography>
                             </Conditionbox>
-                            <Typography color="lightgrey" sx={{fontSize: "13px"}}>Last Updated: {moment().format('LT')}</Typography>
+                            <Typography>{data.main ? <Typography color="lightgrey" sx={{fontSize: "13px"}}>Last Updated: {moment().format('LT')}</Typography> : null}</Typography>
                         </Weathergrid>
                         <Grid item xs={5}>
                         </Grid>
-                    </Grid1>
+                    </Grid>
                 </Temperaturearea>
                 <Divider sx={{paddingBottom: 0.5}}></Divider>
                 <Weatherdetails>
-                    <Grid1 container spacing={2}>
+                    <Grid container spacing={2}>
                         <Grid item xs={6}>
-                            <Fourbox variant="h6" sx={{fontSize: '12px'}}>High:</Fourbox>
+                            <Fourbox> {data.main ? <Fourbox variant="h6" sx={{fontSize: '12px'}}>High:</Fourbox> : null }</Fourbox>
                             <Typography>{data.main ? <Typography variant="h6">{Math.round(data.main?.temp_max)}°</Typography> : null}</Typography>
                         </Grid>
                         <Grid item xs={6}>
-                            <Fourbox variant="h6" sx={{fontSize: '12px'}}>Low:</Fourbox>
+                            <Fourbox> {data.main ? <Fourbox variant="h6" sx={{fontSize: '12px'}}>Low:</Fourbox> : null }</Fourbox>
                             <Typography>{data.main ? <Typography variant="h6">{Math.round(data.main?.temp_min)}°</Typography> : null}</Typography>
                         </Grid>
                         <Grid item xs={6}>
-                            <Fourbox variant="h6" sx={{fontSize: '12px'}}>Chances of rain:</Fourbox>
-                            <Typography variant="h6">DATA</Typography>
+                            <Fourbox> {data.main ? <Fourbox variant="h6" sx={{fontSize: '12px'}}>Chance of rain:</Fourbox> : null }</Fourbox>
+                            <Typography> {data.main ? <Typography variant="h6">N/A</Typography> : null}</Typography>
                         </Grid>
                         <Grid item xs={6}>
-                            <Fourbox variant="h6" sx={{fontSize: '12px'}}>Precipitation:</Fourbox>
-                            <Typography variant="h6">DATA</Typography>
+                            <Fourbox> {data.main ? <Fourbox variant="h6" sx={{fontSize: '12px'}}>Precipitation:</Fourbox> : null }</Fourbox>
+                            <Typography> {data.main ? <Typography variant="h6">N/A</Typography> : null}</Typography>
                         </Grid>
                         <Grid item xs={6}>
-                            <Fourbox variant="h6" sx={{fontSize: '12px'}}>Wind:</Fourbox>
+                            <Fourbox> {data.main ? <Fourbox variant="h6" sx={{fontSize: '12px'}}>Wind:</Fourbox> : null }</Fourbox>
                             <Typography>{data.main ? <Typography variant="h6">{Math.round(data.wind?.speed)} mph</Typography> : null}</Typography>
                         </Grid>
                         <Grid item xs={6}>
-                            <Fourbox variant="h6" sx={{fontSize: '12px'}}>Humidity:</Fourbox>
+                            <Fourbox> {data.main ? <Fourbox variant="h6" sx={{fontSize: '12px'}}>Humidity:</Fourbox> : null }</Fourbox>
                             <Typography>{data.main ? <Typography variant="h6">{Math.round(data.main?.humidity)}%</Typography> : null}</Typography>
                         </Grid>
-                    </Grid1>
+                    </Grid>
                 </Weatherdetails>
                 <Divider sx={{paddingBottom: 1}}></Divider>
                 <Forecast>
-                    <Grid1 container spacing={2}>
+                    <Grid container spacing={2}>
                         <Grid item xs={2}>
-                            <Fourbox variant="h6" sx={{fontSize: '14px', marginBottom: 0}}>{(moment().format('h') - 1)}:{moment().format('m')}</Fourbox>
-                            <Typography>{data.main ? <Typography variant="h6">{Math.round(data.main?.temp)}°</Typography> : null}</Typography>
-                            <Typography variant="h6">{data.weather ? <img style={{ width: 30, height: 30 }} src={(`http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`)}></img> : null}</Typography>
+                            <Fourbox> {data.main ? <Fourbox variant="h6" sx={{fontSize: '14px', marginBottom: 0}}>{(moment().format('h') - 1)} {moment().format('a')}</Fourbox> : null} </Fourbox>
+                            <Typography>{data.main ? <Typography variant="h6">{Math.round(cityTemp)}°</Typography> : null}</Typography>
+                            <Typography variant="h6">{data.weather ? <img style={{ width: 30, height: 30 }} src={(`http://openweathermap.org/img/wn/${weatherIcon}@2x.png`)}></img> : null}</Typography>
                         </Grid>
                         <Grid item xs={2} sx={{color: 'rgb(108,168,255)'}}>
-                            <Fourbox variant="h6" sx={{fontSize: '14px', marginBottom: 0, color: 'rgb(108,168,255)'}}>{moment().format('h')}:{moment().format('m')}</Fourbox>
-                            <Typography>{data.main ? <Typography variant="h6">{Math.round(data.main?.temp)}°</Typography> : null}</Typography>
-                            <Typography variant="h6">{data.weather ? <img style={{ width: 30, height: 30 }} src={(`http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`)}></img> : null}</Typography>
+                            <Fourbox> {data.main ? <Fourbox variant="h6" sx={{fontSize: '14px', marginBottom: 0, color: 'rgb(108,168,255)'}}>{moment().format('h')} {moment().format('a')}</Fourbox> : null} </Fourbox>
+                            <Typography>{data.main ? <Typography variant="h6">{Math.round(cityTemp)}°</Typography> : null}</Typography>
+                            <Typography variant="h6">{data.weather ? <img style={{ width: 30, height: 30 }} src={(`http://openweathermap.org/img/wn/${weatherIcon}@2x.png`)}></img> : null}</Typography>
                         </Grid>
                         <Grid item xs={2}>
-                            <Fourbox variant="h6" sx={{fontSize: '14px', marginBottom: 0}}>{Number(moment().format('h'))+ 1}:{moment().format('m')}</Fourbox>
-                            <Typography>{data.main ? <Typography variant="h6">{Math.round(data.main?.temp)}°</Typography> : null}</Typography>
-                            <Typography variant="h6">{data.weather ? <img style={{ width: 30, height: 30 }} src={(`http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`)}></img> : null}</Typography>
+                            <Fourbox> {data.main ? <Fourbox variant="h6" sx={{fontSize: '14px', marginBottom: 0}}>{Number(moment().format('h'))+ 1} {moment().format('a')}</Fourbox> : null} </Fourbox>
+                            <Typography>{data.main ? <Typography variant="h6">{Math.round(cityTemp)}°</Typography> : null}</Typography>
+                            <Typography variant="h6">{data.weather ? <img style={{ width: 30, height: 30 }} src={(`http://openweathermap.org/img/wn/${weatherIcon}@2x.png`)}></img> : null}</Typography>
                         </Grid>
                         <Grid item xs={2}>
-                            <Fourbox variant="h6" sx={{fontSize: '14px', marginBottom: 0}}>{Number(moment().format('h'))+ 2}:{moment().format('m')}</Fourbox>
-                            <Typography>{data.main ? <Typography variant="h6">{Math.round(data.main?.temp)}°</Typography> : null}</Typography>
-                            <Typography variant="h6">{data.weather ? <img style={{ width: 30, height: 30 }} src={(`http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`)}></img> : null}</Typography>
+                            <Fourbox> {data.main ? <Fourbox variant="h6" sx={{fontSize: '14px', marginBottom: 0}}>{Number(moment().format('h'))+ 2} {moment().format('a')}</Fourbox> : null} </Fourbox>
+                            <Typography>{data.main ? <Typography variant="h6">{Math.round(cityTemp)}°</Typography> : null}</Typography>
+                            <Typography variant="h6">{data.weather ? <img style={{ width: 30, height: 30 }} src={(`http://openweathermap.org/img/wn/${weatherIcon}@2x.png`)}></img> : null}</Typography>
                         </Grid>
                         <Grid item xs={2}>
-                            <Fourbox variant="h6" sx={{fontSize: '14px', marginBottom: 0}}>{Number(moment().format('h'))+ 3}:{moment().format('m')}</Fourbox>
-                            <Typography>{data.main ? <Typography variant="h6">{Math.round(data.main?.temp)}°</Typography> : null}</Typography>
-                            <Typography variant="h6">{data.weather ? <img style={{ width: 30, height: 30 }} src={(`http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`)}></img> : null}</Typography>
+                            <Fourbox> {data.main ? <Fourbox variant="h6" sx={{fontSize: '14px', marginBottom: 0}}>{Number(moment().format('h'))+ 3} {moment().format('a')}</Fourbox> : null} </Fourbox>
+                            <Typography>{data.main ? <Typography variant="h6">{Math.round(cityTemp)}°</Typography> : null}</Typography>
+                            <Typography variant="h6">{data.weather ? <img style={{ width: 30, height: 30 }} src={(`http://openweathermap.org/img/wn/${weatherIcon}@2x.png`)}></img> : null}</Typography>
                         </Grid>
                         <Grid item xs={2}>
-                            <Fourbox variant="h6" sx={{fontSize: '14px', marginBottom: 0}}>{Number(moment().format('h'))+ 4}:{moment().format('m')}</Fourbox>
-                            <Typography>{data.main ? <Typography variant="h6">{Math.round(data.main?.temp)}°</Typography> : null}</Typography>
-                            <Typography variant="h6">{data.weather ? <img style={{ width: 30, height: 30 }} src={(`http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`)}></img> : null}</Typography>
+                            <Fourbox> {data.main ? <Fourbox variant="h6" sx={{fontSize: '14px', marginBottom: 0}}>{Number(moment().format('h'))+ 4} {moment().format('a')}</Fourbox> : null} </Fourbox>
+                            <Typography>{data.main ? <Typography variant="h6">{Math.round(cityTemp)}°</Typography> : null}</Typography>
+                            <Typography variant="h6">{data.weather ? <img style={{ width: 30, height: 30 }} src={(`http://openweathermap.org/img/wn/${weatherIcon}@2x.png`)}></img> : null}</Typography>
                         </Grid>
-                    </Grid1>
+                    </Grid>
                 </Forecast>
-                <Divider sx={{paddingBottom: 0}}></Divider>
-                <CardContent>
-                    <Grid1 container spacing={2}>
-                        <Grid item xs={4}>
-                            <Weatherbutton />
-                        </Grid>
-                        <Grid item xs={4}>
-                            <Forecastbutton />
-                        </Grid>
-                        <Grid item xs={4}>
-                            <Settingsbutton />
-                        </Grid>
-                    </Grid1>
-                </CardContent>
+
                 
+
             </CardContent>
         </Primarycard>
+
         </Grid>
-  )
+    )
 }
 
 export default Mainpage

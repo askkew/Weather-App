@@ -7,7 +7,7 @@ const Settingsbutton = () => {
     <>
     <Button sx={{display: 'flex',
     justifyContent: 'center',
-    flexDirection: 'column', color: 'lightgrey'}}>
+    flexDirection: 'column', color: 'lightgrey', padding: 0,}}>
         <SettingsIcon fontSize='medium'/>
         <Typography>Settings</Typography>
     </Button>
