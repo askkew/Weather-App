@@ -99,7 +99,9 @@ const Mainpage = () => {
         const { country } = sys;
         const { main : weathermain } = weather[0];
         }
-    })
+    }).then(axios.get(urltwo).then((response) => {
+
+    }))
     }
 
     return (

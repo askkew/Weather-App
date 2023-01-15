@@ -1,14 +1,23 @@
 /**
- * ! stuff
- * ? stuff
- * TODO: separate mainpage into separate components
- * TODO: between 7pm and 7am, then its moon logo, otherwise its sun logo
- * TODO:
- * TODO:
- * TODO:    mx-auto max-w-screen-md mt-4 py-5 px-32 bg-gradient-to-br  h-fit shadow-xl shadow-gray-400
- * TODO: rgb(11,18,47)   
- * TODO: rgb(108,168,255)
+ * ! THINGS TO DO WITH WEATHER APP
+ * TODO: update padding and margin stuff at the end
+ * TODO: fix icon in top left
+ * TODO: separate each page into its own component
+ * 
+ * TODO: settings page: 
+ * ? ^ light and dark mode
+ * ? ^ other settings idk yet
+ * 
+ * TODO: forecast page:
+ * ? ^ show daily forecast for next 7 days
+ * ? ^ show hourly forecast for next 7 hours
+ * ? ^ show simple weather stats at the top of page
+ * TODO: 
+ * 
+ * 
  * * const currentHour = moment().format('h');
  * * const currentAmpm = moment().format('a');
  * * (Number(currentHour) >= 7 && currentAmpm === 'pm' 
+ * * rgb(108,168,255)
+ * * rgb(11,18,47) 
  */
