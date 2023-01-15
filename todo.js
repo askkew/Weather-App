@@ -1,6 +1,5 @@
 /**
  * ! THINGS TO DO WITH WEATHER APP
- * TODO: update padding and margin stuff at the end
  * TODO: fix icon in top left
  * TODO: separate each page into its own component
  * 
