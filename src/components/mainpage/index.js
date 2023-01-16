@@ -90,16 +90,24 @@ const Mainpage = () => {
     const [data, setData] = useState({})
     const [location, setLocation] = useState('');
 
+    //basic weather data by city name
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=imperial&appid=7402bcd03e0b88f6c75855bda3497673`
 
-    const urltwo = `https://api.openweathermap.org/data/3.0/onecall?lat=${data.weather?data.coord?.lat:null}&lon=${data.weather?data.coord?.lon:null}&exclude=hourly,daily&appid=7402bcd03e0b88f6c75855bda3497673`
+    //useless
+    //const urltwo = `https://api.openweathermap.org/data/3.0/onecall?lat=${data.weather?data.coord?.lat:null}&lon=${data.weather?data.coord?.lon:null}&exclude=hourly,daily&appid=7402bcd03e0b88f6c75855bda3497673`
+
+    //get city location key by name
+    const locationkeyurl = `http://dataservice.accuweather.com/locations/v1/cities/search?apikey=PJizTO8MMJqt62eaSX2GgHyWiC8zynwp=Jersey%20Village&alias=T`
+
+    //get city 12 hour forecast by location key name
+    const forecasturl = `http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/2110204?apikey=PJizTO8MMJqt62eaSX2GgHyWiC8zynwp`
 
     const handleSearch = () => {
     axios.get(url)
         .then((response) => { // first data fetch
 
             const newDataObj = {};
-            let coordinates = {};
+            let nameKey = {};
 
             if (response?.data) {
                 console.log({response})
@@ -108,19 +116,28 @@ const Mainpage = () => {
                 newDataObj[weather] = weather;
                 newDataObj[main] = main;
                 newDataObj[sys] = sys;
-                coordinates = coord;
+                nameKey = name;
             } 
             setData(response.data)
-            return { newDataObj, coordinates };
+            return { newDataObj, nameKey };
         })
-        .then(({ newDataObj, coordinates }) => { // second data fetch
-            console.log({ newDataObj, coordinates })
-            const { lat, lon } = coordinates;
-            //const urltwo = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat ? lat : null}&lon=${lon ? lon : null}&exclude=hourly,daily&appid=f64b214ed3018053fa460454469c6fa9`
-            axios.get(urltwo).then((response2) => {
+        .then(({ newDataObj, nameKey }) => { // second data fetch
+            //const newNewDataObj = {};
+            const locationkeyurl = `https://dataservice.accuweather.com/locations/v1/cities/search?apikey=PJizTO8MMJqt62eaSX2GgHyWiC8zynwp=${data?.name}&alias=T`
+            console.log({ newDataObj, nameKey })
+            axios.get(locationkeyurl).then((response2) => {
                 console.log({ response2 })
             })
+            //return { newNewDataObj, coordinates };
         })
+        // .then(({ newNewDataObj, test }) => { // second data fetch
+        //     console.log({ newNewDataObj, test })
+        //     const { lat, lon } = test;
+        //     axios.get(forecasturl).then((response3) => {
+        //         console.log("test")
+        //         console.log({ response3 })
+        //     })
+        // })
     }
 
     const cityTemp = data.main?.temp;
