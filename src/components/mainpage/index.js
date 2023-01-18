@@ -97,47 +97,73 @@ const Mainpage = () => {
     //const urltwo = `https://api.openweathermap.org/data/3.0/onecall?lat=${data.weather?data.coord?.lat:null}&lon=${data.weather?data.coord?.lon:null}&exclude=hourly,daily&appid=7402bcd03e0b88f6c75855bda3497673`
 
     //get city location key by name
-    const locationkeyurl = `http://dataservice.accuweather.com/locations/v1/cities/search?apikey=PJizTO8MMJqt62eaSX2GgHyWiC8zynwp=Jersey%20Village&alias=T`
+    //const locationkeyurl = `http://dataservice.accuweather.com/locations/v1/cities/search?apikey=PJizTO8MMJqt62eaSX2GgHyWiC8zynwp=Jersey%20Village&alias=T`
 
     //get city 12 hour forecast by location key name
-    const forecasturl = `http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/2110204?apikey=PJizTO8MMJqt62eaSX2GgHyWiC8zynwp`
+    //const forecasturl = `http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/2110204?apikey=PJizTO8MMJqt62eaSX2GgHyWiC8zynwp`
 
     const handleSearch = () => {
     axios.get(url)
         .then((response) => { // first data fetch
-
             const newDataObj = {};
             let nameKey = {};
-
             if (response?.data) {
-                console.log({response})
-                const { name, weather, main, sys, coord } = response.data;
-                newDataObj[name] = name;
-                newDataObj[weather] = weather;
-                newDataObj[main] = main;
-                newDataObj[sys] = sys;
+                console.log(response.data);
+                const { name, weather, main, sys, wind } = response.data;
+                newDataObj.name = name;
+                newDataObj.weather = weather;
+                newDataObj.main = main;
+                newDataObj.sys = sys;
+                newDataObj.wind = wind;
+
                 nameKey = name;
             } 
             setData(response.data)
             return { newDataObj, nameKey };
         })
         .then(({ newDataObj, nameKey }) => { // second data fetch
-            //const newNewDataObj = {};
-            const locationkeyurl = `https://dataservice.accuweather.com/locations/v1/cities/search?apikey=PJizTO8MMJqt62eaSX2GgHyWiC8zynwp=${data?.name}&alias=T`
+            // const newNewDataObj = {};
+            let locationKey = {};
+
+            const locationkeyurl = `http://dataservice.accuweather.com/locations/v1/cities/search?apikey=GkTpopNR6k4CajJOGJpgfkrY86BN80Dp&q=${nameKey}`
             console.log({ newDataObj, nameKey })
             axios.get(locationkeyurl).then((response2) => {
-                console.log({ response2 })
+                if (response2?.data) {
+                    console.log({response2})
+                    const { Key } = response2.data[0];
+                    locationKey = Key;
+                } 
+                return { newDataObj, locationKey };
             })
-            //return { newNewDataObj, coordinates };
+            .then(({ newDataObj, locationKey }) => { // third data fetch
+                const forecasturl = `http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/${locationKey}?apikey=GkTpopNR6k4CajJOGJpgfkrY86BN80Dp`
+                console.log({ newDataObj, locationKey })
+                axios.get(forecasturl).then((forecastResponse) => {
+                    console.log({ forecastResponse })
+                    if (forecastResponse?.data) {
+
+                        newDataObj.forecast = [];
+                        forecastResponse.data.forEach((dataPoint, i) => {
+                            if (i < 6) {
+                                const { DateTime, IsDayLight, Temperature, WeatherIcon } = dataPoint;
+                                const { Unit, Value } = Temperature;
+                                const forecastPoint = {
+                                    DateTime: DateTime,
+                                    IsDayLight: IsDayLight,
+                                    Temperature: Temperature,
+                                    WeatherIcon: WeatherIcon,
+                                    Unit: Unit,
+                                    Value: Value,
+                                }
+                                newDataObj.forecast.push(forecastPoint);
+                            }
+                        });
+                    } 
+                    setData(newDataObj);
+                    console.log({ newDataObj });
+                })
+            })
         })
-        // .then(({ newNewDataObj, test }) => { // second data fetch
-        //     console.log({ newNewDataObj, test })
-        //     const { lat, lon } = test;
-        //     axios.get(forecasturl).then((response3) => {
-        //         console.log("test")
-        //         console.log({ response3 })
-        //     })
-        // })
     }
 
     const cityTemp = data.main?.temp;
@@ -223,43 +249,28 @@ const Mainpage = () => {
                     </Grid>
                 </Weatherdetails>
                 { showPage && <Divider sx={{paddingBottom: 0.5}}/>}
-                <Forecast>
+                { isData && data.forecast && <Forecast>
                     <Grid container spacing={2}>
-                        <Grid item xs={2}>
-                            <Fourbox> {isData ? <Fourbox variant="h6" sx={{fontSize: '14px', marginBottom: 0}}>{(moment().format('h') - 1)} {moment().format('a')}</Fourbox> : null} </Fourbox>
-                            <Typography>{isData ? <Typography variant="h6">{Math.round(cityTemp)}°</Typography> : null}</Typography>
-                            <Typography variant="h6">{data.weather ? <img style={{ width: 30, height: 30 }} src={(`http://openweathermap.org/img/wn/${weatherIcon}@2x.png`)}></img> : null}</Typography>
-                        </Grid>
-                        <Grid item xs={2} sx={{color: 'rgb(108,168,255)'}}>
-                            <Fourbox> {isData ? <Fourbox variant="h6" sx={{fontSize: '14px', marginBottom: 0, color: 'rgb(108,168,255)'}}>{moment().format('h')} {moment().format('a')}</Fourbox> : null} </Fourbox>
-                            <Typography>{isData ? <Typography variant="h6">{Math.round(cityTemp)}°</Typography> : null}</Typography>
-                            <Typography variant="h6">{data.weather ? <img style={{ width: 30, height: 30 }} src={(`http://openweathermap.org/img/wn/${weatherIcon}@2x.png`)}></img> : null}</Typography>
-                        </Grid>
-                        <Grid item xs={2}>
-                            <Fourbox> {isData ? <Fourbox variant="h6" sx={{fontSize: '14px', marginBottom: 0}}>{Number(moment().format('h'))+ 1} {moment().format('a')}</Fourbox> : null} </Fourbox>
-                            <Typography>{isData ? <Typography variant="h6">{Math.round(cityTemp)}°</Typography> : null}</Typography>
-                            <Typography variant="h6">{data.weather ? <img style={{ width: 30, height: 30 }} src={(`http://openweathermap.org/img/wn/${weatherIcon}@2x.png`)}></img> : null}</Typography>
-                        </Grid>
-                        <Grid item xs={2}>
-                            <Fourbox> {isData ? <Fourbox variant="h6" sx={{fontSize: '14px', marginBottom: 0}}>{Number(moment().format('h'))+ 2} {moment().format('a')}</Fourbox> : null} </Fourbox>
-                            <Typography>{isData ? <Typography variant="h6">{Math.round(cityTemp)}°</Typography> : null}</Typography>
-                            <Typography variant="h6">{data.weather ? <img style={{ width: 30, height: 30 }} src={(`http://openweathermap.org/img/wn/${weatherIcon}@2x.png`)}></img> : null}</Typography>
-                        </Grid>
-                        <Grid item xs={2}>
-                            <Fourbox> {isData ? <Fourbox variant="h6" sx={{fontSize: '14px', marginBottom: 0}}>{Number(moment().format('h'))+ 3} {moment().format('a')}</Fourbox> : null} </Fourbox>
-                            <Typography>{isData ? <Typography variant="h6">{Math.round(cityTemp)}°</Typography> : null}</Typography>
-                            <Typography variant="h6">{data.weather ? <img style={{ width: 30, height: 30 }} src={(`http://openweathermap.org/img/wn/${weatherIcon}@2x.png`)}></img> : null}</Typography>
-                        </Grid>
-                        <Grid item xs={2}>
-                            <Fourbox> {isData ? <Fourbox variant="h6" sx={{fontSize: '14px', marginBottom: 0}}>{Number(moment().format('h'))+ 4} {moment().format('a')}</Fourbox> : null} </Fourbox>
-                            <Typography>{isData ? <Typography variant="h6">{Math.round(cityTemp)}°</Typography> : null}</Typography>
-                            <Typography variant="h6">{data.weather ? <img style={{ width: 30, height: 30 }} src={(`http://openweathermap.org/img/wn/${weatherIcon}@2x.png`)}></img> : null}</Typography>
-                        </Grid>
+                        { data.forecast.map((dataPoint, i) => {
+                            const {
+                                DateTime, 
+                                // IsDayLight, 
+                                // Temperature, 
+                                // Unit, 
+                                Value, 
+                                WeatherIcon 
+                            } = dataPoint;
+                            const UpdatedIcon = WeatherIcon < 10 ? '0' + WeatherIcon : WeatherIcon;
+                            return <Grid item xs={2} key={`${i}/${Value}`}>
+                                <Fourbox variant="h6" sx={{fontSize: '14px', marginBottom: 0}}>
+                                    {(moment(DateTime).format("h A"))}
+                                </Fourbox>
+                                <Typography variant="h6">{Value}°</Typography>
+                                <img style={{ width: 30, height: 30 }} src={(`https://developer.accuweather.com/sites/default/files/${UpdatedIcon}-s.png`)}></img>
+                            </Grid>
+                        })}
                     </Grid>
-                </Forecast>
-
-                
-
+                </Forecast> }
             </CardContent>
         </Primarycard>
 
