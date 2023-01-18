@@ -86,6 +86,28 @@ const Fourbox = styled(Typography)({
     color: 'lightgrey'
 })
 
+const CustomTextField = styled(TextField)({
+    root: {
+        '& label.Mui-focused': {
+          color: 'white',
+        },
+        '& .MuiInput-underline:after': {
+          borderBottomColor: 'yellow',
+        },
+        '& .MuiOutlinedInput-root': {
+          '& fieldset': {
+            borderColor: 'white',
+          },
+          '&:hover fieldset': {
+            borderColor: 'white',
+          },
+          '&.Mui-focused fieldset': {
+            borderColor: 'yellow',
+          },
+        },
+      },
+})
+
 const Mainpage = () => {
     const [data, setData] = useState({})
     const [location, setLocation] = useState('');
@@ -178,7 +200,7 @@ const Mainpage = () => {
         <Primarycard elevation={0}>
             <CardContent>
                 <Searcharea>
-                    <TextField
+                    <CustomTextField
                     id="outlined-basic"
                     label="Enter City Name"
                     variant="outlined"
@@ -266,7 +288,7 @@ const Mainpage = () => {
                                     {(moment(DateTime).format("h A"))}
                                 </Fourbox>
                                 <Typography variant="h6">{Value}°</Typography>
-                                <img style={{ width: 30, height: 30 }} src={(`https://developer.accuweather.com/sites/default/files/${UpdatedIcon}-s.png`)}></img>
+                                <img style={{ width: 35, height: 25 }} src={(`https://developer.accuweather.com/sites/default/files/${UpdatedIcon}-s.png`)}></img>
                             </Grid>
                         })}
                     </Grid>

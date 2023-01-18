@@ -9,6 +9,7 @@ import { styled } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import axios from 'axios';
 import Mainpage from './components/mainpage';
+import { light } from '@mui/material/styles/createPalette';
 
 
 
@@ -61,7 +62,8 @@ function App() {
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
 
-      <div style={{ height: '100vh', background: 'linear-gradient(to right bottom, darkcyan, blue)' }}>
+      {/* <div style={{ height: '100vh', background: 'linear-gradient(to right bottom, darkcyan, blue)' }}> */}
+      <div style={{ height: '100vh', backgroundImage: 'url(https://cdn.dribbble.com/users/925716/screenshots/3333720/attachments/722375/night.png)', backgroundSize : "125% auto" }}>
         <Mainpage />
 
         <Footer container spacing={2} >
