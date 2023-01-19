@@ -18,13 +18,6 @@ const Searcharea = styled('div')({
     marginTop: 10,
 })
 
-const Submitbutton = styled(Button)({
-    height: 55,
-    marginLeft: 2,
-    color: 'white',
-    backgroundColor: 'rgb(108,168,255)'
-})
-
 const Primarycard = styled(Card)({
     paddingTop: 0,
     display: 'flex',
@@ -71,7 +64,7 @@ const Forecast = styled(CardContent)({
 
 const Temperaturearea = styled(CardContent)({
     paddingTop: 0,
-    minHeight: '211px',
+    minHeight: '300px',
 })
 
 const Weatherdetails = styled(CardContent)({
@@ -84,6 +77,13 @@ const Weatherdetails = styled(CardContent)({
 const Fourbox = styled(Typography)({
     marginBottom: '5px',
     color: 'lightgrey'
+})
+
+const Submitbutton = styled(Button)({
+    height: 55,
+    marginLeft: 2,
+    color: 'white',
+    backgroundColor: 'rgb(108,168,255)'
 })
 
 const CustomTextField = styled(TextField)({
@@ -201,7 +201,7 @@ const Mainpage = () => {
             <CardContent>
                 <Searcharea>
                     <CustomTextField
-                    id="outlined-basic"
+                    id="outlined-secondary"
                     label="Enter City Name"
                     variant="outlined"
                     onChange={event => setLocation(event.target.value)}
@@ -253,8 +253,8 @@ const Mainpage = () => {
                             <Typography>{isData ? <Typography variant="h6">{Math.round(data.main?.temp_min)}°</Typography> : null}</Typography>
                         </Grid>
                         <Grid item xs={6}>
-                            <Fourbox> {isData ? <Fourbox variant="h6" sx={{fontSize: '12px'}}>Chance of rain:</Fourbox> : null }</Fourbox>
-                            <Typography> {isData ? <Typography variant="h6">N/A</Typography> : null}</Typography>
+                            <Fourbox> {isData ? <Fourbox variant="h6" sx={{fontSize: '12px'}}>Feels like:</Fourbox> : null }</Fourbox>
+                            <Typography> {isData ? <Typography variant="h6">{Math.round(data.main?.feels_like)}°</Typography> : null}</Typography>
                         </Grid>
                         <Grid item xs={6}>
                             <Fourbox> {isData ? <Fourbox variant="h6" sx={{fontSize: '12px'}}>Precipitation:</Fourbox> : null }</Fourbox>
@@ -275,20 +275,19 @@ const Mainpage = () => {
                     <Grid container spacing={2}>
                         { data.forecast.map((dataPoint, i) => {
                             const {
-                                DateTime, 
-                                // IsDayLight, 
-                                // Temperature, 
-                                // Unit, 
+                                DateTime,
                                 Value, 
                                 WeatherIcon 
                             } = dataPoint;
                             const UpdatedIcon = WeatherIcon < 10 ? '0' + WeatherIcon : WeatherIcon;
+                            let UpdateTime = DateTime;
+                            UpdateTime = DateTime.substring(DateTime, DateTime.length - 9);
                             return <Grid item xs={2} key={`${i}/${Value}`}>
                                 <Fourbox variant="h6" sx={{fontSize: '14px', marginBottom: 0}}>
-                                    {(moment(DateTime).format("h A"))}
+                                    {(moment(UpdateTime).format("h A"))}
                                 </Fourbox>
                                 <Typography variant="h6">{Value}°</Typography>
-                                <img style={{ width: 35, height: 25 }} src={(`https://developer.accuweather.com/sites/default/files/${UpdatedIcon}-s.png`)}></img>
+                                <img style={{ width: 40, height: 25 }} src={(`https://developer.accuweather.com/sites/default/files/${UpdatedIcon}-s.png`)}></img>
                             </Grid>
                         })}
                     </Grid>

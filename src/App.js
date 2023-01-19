@@ -66,7 +66,7 @@ function App() {
       <div style={{ height: '100vh', backgroundImage: 'url(https://cdn.dribbble.com/users/925716/screenshots/3333720/attachments/722375/night.png)', backgroundSize : "125% auto" }}>
         <Mainpage />
 
-        <Footer container spacing={2} >
+        {/* <Footer container spacing={2} >
           <FooterButtonContainer>
               <Weatherbutton />
           </FooterButtonContainer>
@@ -76,7 +76,7 @@ function App() {
           <FooterButtonContainer>
               <Settingsbutton />
           </FooterButtonContainer>
-        </Footer>
+        </Footer> */}
       </div>
 
     </ThemeProvider>
