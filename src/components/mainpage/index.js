@@ -6,6 +6,7 @@ import Weatherbutton from '../buttons/weatherbutton';
 import Settingsbutton from '../buttons/settingsbutton';
 import Forecastbutton from '../buttons/forecastbutton';
 import AcUnitIcon from '@mui/icons-material/AcUnit';
+import PacmanLoader from 'react-spinners/PacmanLoader';
 import moment from 'moment';
 import axios from 'axios';
 
@@ -80,22 +81,8 @@ const Fourbox = styled(Typography)({
 const Submitbutton = styled(Button)({
     height: 55,
     marginLeft: 2,
-    color: 'primary',
-    // '&:hover': {
-    //     backgroundColor: '#0069d9',
-    //     borderColor: '#0062cc',
-    //     boxShadow: 'none',
-    //   },
-    '&:active': {
-        boxShadow: 'none',
-        // backgroundColor: '#0062cc',
-        // borderColor: '#005cbf',
-        backgroundColor: 'pink',
-    },
-    '&:focus': {
-        // boxShadow: '0 0 0 0.2rem rgba(0,123,255,.5)',
-        backgroundColor: 'orange',
-    },
+    color: 'white',
+    borderColor: 'lightgrey'
 })
 
 const CustomTextField = styled(TextField)({
@@ -123,6 +110,7 @@ const CustomTextField = styled(TextField)({
 const Mainpage = ( { setUseLightMode } ) => {
     const [data, setData] = useState({})
     const [location, setLocation] = useState('');
+    const [ isLoading, setIsLoading ] = useState(false);
     //basic weather data by city name
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=imperial&appid=7402bcd03e0b88f6c75855bda3497673`
 
@@ -136,6 +124,7 @@ const Mainpage = ( { setUseLightMode } ) => {
     //const forecasturl = `http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/2110204?apikey=PJizTO8MMJqt62eaSX2GgHyWiC8zynwp`
 
     const handleSearch = () => {
+        setIsLoading(true);
         axios.get(url)
             .then((response) => { // first data fetch
                 const newDataObj = {};
@@ -195,6 +184,7 @@ const Mainpage = ( { setUseLightMode } ) => {
                             });
                         } 
                         setData(newDataObj);
+                        setIsLoading(false);
                         console.log({ newDataObj });
                     })
                 })
@@ -213,21 +203,32 @@ const Mainpage = ( { setUseLightMode } ) => {
     <Grid container justifyContent="center">
         <Primarycard elevation={0}>
             <CardContent>
-                <Searcharea>
-                    <CustomTextField
-                        id="outlined-secondary"
-                        label="Enter City Name"
-                        variant="outlined"
-                        onChange={event => setLocation(event.target.value)}
-                        value={location}
+                    {isLoading ?  
+                    
+                    <PacmanLoader
+                        color={'white'}
+                        loading={isLoading}
+                        size={20}
+                        sx={{display: 'flex', justifyContent: 'center', flexDirection: 'column'}}
+                    
                     />
-                    <Submitbutton
-                        variant="outlined"
-                        onClick={location.length > 0 && handleSearch}
-                    >
-                        Submit
-                    </Submitbutton>
-                </Searcharea>
+                    
+                    :
+                    <Searcharea>
+                        <CustomTextField
+                            id="outlined-secondary"
+                            label="Enter City Name"
+                            variant="outlined"
+                            onChange={event => setLocation(event.target.value)}
+                            value={location}
+                        />
+                        <Submitbutton
+                            variant="outlined"
+                            onClick={location.length > 0 && handleSearch}
+                        >
+                            Submit
+                        </Submitbutton>
+                    </Searcharea>}
                 <Divider sx={{paddingBottom: 2}}></Divider>
                 <Locationarea>
                     <Grid container spacing={2}>
