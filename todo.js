@@ -1,18 +1,13 @@
 /**
  * ! THINGS TO DO WITH WEATHER APP
- * TODO: fix icon in top left
- * TODO: separate each page into its own component
+ * TODO: Change background based on IsDayLight variable
+ * TODO: precipitation
+ * TODO: fix textfield
+ * TODO: fix button
+ * TODO: separate components
  * 
- * TODO: settings page: 
- * ? ^ light and dark mode
- * ? ^ other settings idk yet
- * 
- * TODO: forecast page:
- * ? ^ show daily forecast for next 7 days
- * ? ^ show hourly forecast for next 7 hours
- * ? ^ show simple weather stats at the top of page
- * TODO: 
- * 
+ * TODO: host on AWS
+ * TODO: FIX CORS ISSUE
  * 
  * * const currentHour = moment().format('h');
  * * const currentAmpm = moment().format('a');
