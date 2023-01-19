@@ -55,7 +55,6 @@ const Conditionbox = styled('div')({
     display: 'flex',
     justifyContent: 'left',
     flexDirection: 'row',
-    color: 'white',
 })
 
 const Forecast = styled(CardContent)({
@@ -76,7 +75,6 @@ const Weatherdetails = styled(CardContent)({
 
 const Fourbox = styled(Typography)({
     marginBottom: '5px',
-    color: 'lightgrey'
 })
 
 const Submitbutton = styled(Button)({
@@ -108,10 +106,9 @@ const CustomTextField = styled(TextField)({
       },
 })
 
-const Mainpage = () => {
+const Mainpage = ( { setUseLightMode } ) => {
     const [data, setData] = useState({})
     const [location, setLocation] = useState('');
-
     //basic weather data by city name
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=imperial&appid=7402bcd03e0b88f6c75855bda3497673`
 
@@ -167,16 +164,18 @@ const Mainpage = () => {
                         newDataObj.forecast = [];
                         forecastResponse.data.forEach((dataPoint, i) => {
                             if (i < 6) {
-                                const { DateTime, IsDayLight, Temperature, WeatherIcon } = dataPoint;
+                                const { DateTime, IsDaylight, Temperature, WeatherIcon } = dataPoint;
                                 const { Unit, Value } = Temperature;
                                 const forecastPoint = {
                                     DateTime: DateTime,
-                                    IsDayLight: IsDayLight,
+                                    IsDaylight: IsDaylight,
                                     Temperature: Temperature,
                                     WeatherIcon: WeatherIcon,
                                     Unit: Unit,
                                     Value: Value,
                                 }
+                                if (i === 0) setUseLightMode(IsDaylight);
+
                                 newDataObj.forecast.push(forecastPoint);
                             }
                         });
@@ -187,6 +186,7 @@ const Mainpage = () => {
             })
         })
     }
+    
 
     const cityTemp = data.main?.temp;
     const locationName = data?.name;
@@ -219,10 +219,10 @@ const Mainpage = () => {
                     <Grid container spacing={2}>
                         <Locationgrid item xs={9}>
                             <Typography>{isData ? <LocationOnIcon /> : null}</Typography>
-                            <Typography color="lightgrey">{locationName ? <Typography sx={{fontSize: '12px'}}>{locationName},  {countryName}</Typography> : null}</Typography>
+                            <Typography>{locationName ? <Typography sx={{fontSize: '12px'}}>{locationName},  {countryName}</Typography> : null}</Typography>
                         </Locationgrid>
                         <Grid item xs={3}>
-                            <Typography variant="h6">{data.weather ? <img style={{ width: 80, height: 80 }} src={(`http://openweathermap.org/img/wn/${weatherIcon}@2x.png`)}></img> : null}</Typography>
+                            {/* <Typography variant="h6">{data.weather ? <img style={{ width: 80, height: 80 }} src={(`https://developer.accuweather.com/sites/default/files/01-s.png`)}></img> : null}</Typography> */}
                             {/* { Number(currentHour) >= 7 && Number(currentHour) <= 19 ? <WbSunnyIcon sx={{transform: 'scale(2)', float: 'right', color: 'goldenrod'}}/> : <NightsStayIcon sx={{transform: 'scale(2)', float: 'right', color: 'rgb(251, 225, 112)'}}/>} */}
                         </Grid>
                     </Grid>
@@ -235,7 +235,7 @@ const Mainpage = () => {
                                 {/* <Typography variant="h6">{data.weather ? <img src={(`http://openweathermap.org/img/wn/${weatherIcon}@2x.png`)}></img> : null}</Typography> */}
                                 <Typography variant="h6">{data.weather ? <Typography variant="h6">{data.weather[0].main}</Typography> : null}</Typography>
                             </Conditionbox>
-                            <Typography>{isData ? <Typography color="lightgrey" sx={{fontSize: "13px"}}>Last Updated: {moment().format('LT')}</Typography> : null}</Typography>
+                            <Typography>{isData ? <Typography sx={{fontSize: "13px"}}>Last Updated: {moment().format('LT')}</Typography> : null}</Typography>
                         </Weathergrid>
                         <Grid item xs={5}>
                         </Grid>

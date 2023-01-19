@@ -34,7 +34,7 @@ const lightTheme = createTheme({
     secondary: {
       main: '#00e676',
     },
-  }
+  },
 })
 
 const Footer = styled('div')({
@@ -58,13 +58,23 @@ const FooterButtonContainer = styled('div')({
 
 function App() {
 
+  const[useLightMode, setUseLightMode] = useState(true);
+
+  const lightBackground = "url(https://cdn.dribbble.com/users/925716/screenshots/3333720/attachments/722376/after_noon.png)";
+  const nightBackground = "url(https://cdn.dribbble.com/users/925716/screenshots/3333720/attachments/722375/night.png)";
+
+
   return (
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={useLightMode === true ? lightTheme : darkTheme }>
       <CssBaseline />
 
       {/* <div style={{ height: '100vh', background: 'linear-gradient(to right bottom, darkcyan, blue)' }}> */}
-      <div style={{ height: '100vh', backgroundImage: 'url(https://cdn.dribbble.com/users/925716/screenshots/3333720/attachments/722375/night.png)', backgroundSize : "125% auto" }}>
-        <Mainpage />
+      {/* <div style={{ height: '100vh', backgroundImage: 'url(https://cdn.dribbble.com/users/925716/screenshots/3333720/attachments/722375/night.png)', backgroundSize : "125% auto" }}> */}
+      <div style={{ 
+        height: '100vh', 
+        backgroundImage: `${useLightMode === true ? lightBackground : nightBackground}`, backgroundSize : "125% auto" 
+      }}>
+        <Mainpage setUseLightMode={ setUseLightMode } />
 
         {/* <Footer container spacing={2} >
           <FooterButtonContainer>
