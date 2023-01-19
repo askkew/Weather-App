@@ -123,74 +123,19 @@ const Mainpage = ( { setUseLightMode } ) => {
     //get city 12 hour forecast by location key name
     //const forecasturl = `http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/2110204?apikey=PJizTO8MMJqt62eaSX2GgHyWiC8zynwp`
 
+
     const handleSearch = () => {
         setIsLoading(true);
-        axios.get(url)
-            .then((response) => { // first data fetch
-                const newDataObj = {};
-                let nameKey = {};
-                if (response?.data) {
-                    console.log(response.data);
-                    const { name, weather, main, sys, wind } = response.data;
-                    newDataObj.name = name;
-                    newDataObj.weather = weather;
-                    newDataObj.main = main;
-                    newDataObj.sys = sys;
-                    newDataObj.wind = wind;
-
-                    nameKey = name;
-                } 
-                setData(response.data)
-                return { newDataObj, nameKey };
-            })
-            .then(({ newDataObj, nameKey }) => { // second data fetch
-                // const newNewDataObj = {};
-                let locationKey = {};
-
-                const locationkeyurl = `http://dataservice.accuweather.com/locations/v1/cities/search?apikey=GkTpopNR6k4CajJOGJpgfkrY86BN80Dp&q=${nameKey}`
-                console.log({ newDataObj, nameKey })
-                axios.get(locationkeyurl).then((response2) => {
-                    if (response2?.data) {
-                        console.log({response2})
-                        const { Key } = response2.data[0];
-                        locationKey = Key;
-                    } 
-                    return { newDataObj, locationKey };
-                })
-                .then(({ newDataObj, locationKey }) => { // third data fetch
-                    const forecasturl = `http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/${locationKey}?apikey=GkTpopNR6k4CajJOGJpgfkrY86BN80Dp`
-                    console.log({ newDataObj, locationKey })
-                    axios.get(forecasturl).then((forecastResponse) => {
-                        console.log({ forecastResponse })
-                        if (forecastResponse?.data) {
-                            newDataObj.forecast = [];
-                            forecastResponse.data.forEach((dataPoint, i) => {
-                                if (i < 6) {
-                                    const { DateTime, IsDaylight, Temperature, WeatherIcon} = dataPoint;
-                                    const { Unit, Value } = Temperature;
-                                    const forecastPoint = {
-                                        DateTime: DateTime,
-                                        IsDaylight: IsDaylight,
-                                        Temperature: Temperature,
-                                        WeatherIcon: WeatherIcon,
-                                        Unit: Unit,
-                                        Value: Value,
-                                        // PrecipitationProbability: PrecipitationProbability,
-                                    }
-                                    if (i === 0) {
-                                        const { PrecipitationProbability } = dataPoint;
-                                        newDataObj.PrecipitationProbability = PrecipitationProbability;
-                                        setUseLightMode(IsDaylight);
-                                    }
-                                    newDataObj.forecast.push(forecastPoint);
-                                }
-                            });
-                        } 
-                        setData(newDataObj);
-                        setIsLoading(false);
-                        console.log({ newDataObj });
-                    })
-                })
+        axios.get("/fetchWeather")
+            .then( response => {
+                console.log({ response })
+                if (response.statusText === 'OK') {
+                    const { data } = response;
+                    const { IsDayLight } = data;
+                    setIsLoading(false);
+                    setUseLightMode(IsDayLight)
+                    setData(data)
+                }
             })
     }
     

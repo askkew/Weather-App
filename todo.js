@@ -1,8 +1,5 @@
 /**
  * ! THINGS TO DO WITH WEATHER APP
- * TODO: precipitation
- * TODO: fix textfield
- * TODO: fix button
  * 
  * TODO: host on AWS
  * TODO: FIX CORS ISSUE
