@@ -163,11 +163,10 @@ const Mainpage = ( { setUseLightMode } ) => {
                     axios.get(forecasturl).then((forecastResponse) => {
                         console.log({ forecastResponse })
                         if (forecastResponse?.data) {
-
                             newDataObj.forecast = [];
                             forecastResponse.data.forEach((dataPoint, i) => {
                                 if (i < 6) {
-                                    const { DateTime, IsDaylight, Temperature, WeatherIcon } = dataPoint;
+                                    const { DateTime, IsDaylight, Temperature, WeatherIcon} = dataPoint;
                                     const { Unit, Value } = Temperature;
                                     const forecastPoint = {
                                         DateTime: DateTime,
@@ -176,9 +175,13 @@ const Mainpage = ( { setUseLightMode } ) => {
                                         WeatherIcon: WeatherIcon,
                                         Unit: Unit,
                                         Value: Value,
+                                        // PrecipitationProbability: PrecipitationProbability,
                                     }
-                                    if (i === 0) setUseLightMode(IsDaylight);
-
+                                    if (i === 0) {
+                                        const { PrecipitationProbability } = dataPoint;
+                                        newDataObj.PrecipitationProbability = PrecipitationProbability;
+                                        setUseLightMode(IsDaylight);
+                                    }
                                     newDataObj.forecast.push(forecastPoint);
                                 }
                             });
@@ -273,7 +276,7 @@ const Mainpage = ( { setUseLightMode } ) => {
                         </Grid>
                         <Grid item xs={6}>
                             <Fourbox> {isData ? <Fourbox variant="h6" sx={{fontSize: '12px'}}>Precipitation:</Fourbox> : null }</Fourbox>
-                            <Typography> {isData ? <Typography variant="h6">N/A</Typography> : null}</Typography>
+                            <Typography> {isData ? <Typography variant="h6">{data.PrecipitationProbability}%</Typography> : null}</Typography>
                         </Grid>
                         <Grid item xs={6}>
                             <Fourbox> {isData ? <Fourbox variant="h6" sx={{fontSize: '12px'}}>Wind:</Fourbox> : null }</Fourbox>
