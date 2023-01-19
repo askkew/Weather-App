@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { Card, CardActions, CardContent, Button, Typography, Box, Grid, TextField, Divider } from '@mui/material';
+import { Card, CardActions, CardContent, Button, Typography, Box, Grid, TextField, Divider, FormControl } from '@mui/material';
 import { styled } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import Weatherbutton from '../buttons/weatherbutton';
@@ -80,8 +80,22 @@ const Fourbox = styled(Typography)({
 const Submitbutton = styled(Button)({
     height: 55,
     marginLeft: 2,
-    color: 'white',
-    backgroundColor: 'rgb(108,168,255)'
+    color: 'primary',
+    // '&:hover': {
+    //     backgroundColor: '#0069d9',
+    //     borderColor: '#0062cc',
+    //     boxShadow: 'none',
+    //   },
+    '&:active': {
+        boxShadow: 'none',
+        // backgroundColor: '#0062cc',
+        // borderColor: '#005cbf',
+        backgroundColor: 'pink',
+    },
+    '&:focus': {
+        // boxShadow: '0 0 0 0.2rem rgba(0,123,255,.5)',
+        backgroundColor: 'orange',
+    },
 })
 
 const CustomTextField = styled(TextField)({
@@ -122,69 +136,69 @@ const Mainpage = ( { setUseLightMode } ) => {
     //const forecasturl = `http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/2110204?apikey=PJizTO8MMJqt62eaSX2GgHyWiC8zynwp`
 
     const handleSearch = () => {
-    axios.get(url)
-        .then((response) => { // first data fetch
-            const newDataObj = {};
-            let nameKey = {};
-            if (response?.data) {
-                console.log(response.data);
-                const { name, weather, main, sys, wind } = response.data;
-                newDataObj.name = name;
-                newDataObj.weather = weather;
-                newDataObj.main = main;
-                newDataObj.sys = sys;
-                newDataObj.wind = wind;
+        axios.get(url)
+            .then((response) => { // first data fetch
+                const newDataObj = {};
+                let nameKey = {};
+                if (response?.data) {
+                    console.log(response.data);
+                    const { name, weather, main, sys, wind } = response.data;
+                    newDataObj.name = name;
+                    newDataObj.weather = weather;
+                    newDataObj.main = main;
+                    newDataObj.sys = sys;
+                    newDataObj.wind = wind;
 
-                nameKey = name;
-            } 
-            setData(response.data)
-            return { newDataObj, nameKey };
-        })
-        .then(({ newDataObj, nameKey }) => { // second data fetch
-            // const newNewDataObj = {};
-            let locationKey = {};
-
-            const locationkeyurl = `http://dataservice.accuweather.com/locations/v1/cities/search?apikey=GkTpopNR6k4CajJOGJpgfkrY86BN80Dp&q=${nameKey}`
-            console.log({ newDataObj, nameKey })
-            axios.get(locationkeyurl).then((response2) => {
-                if (response2?.data) {
-                    console.log({response2})
-                    const { Key } = response2.data[0];
-                    locationKey = Key;
+                    nameKey = name;
                 } 
-                return { newDataObj, locationKey };
+                setData(response.data)
+                return { newDataObj, nameKey };
             })
-            .then(({ newDataObj, locationKey }) => { // third data fetch
-                const forecasturl = `http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/${locationKey}?apikey=GkTpopNR6k4CajJOGJpgfkrY86BN80Dp`
-                console.log({ newDataObj, locationKey })
-                axios.get(forecasturl).then((forecastResponse) => {
-                    console.log({ forecastResponse })
-                    if (forecastResponse?.data) {
+            .then(({ newDataObj, nameKey }) => { // second data fetch
+                // const newNewDataObj = {};
+                let locationKey = {};
 
-                        newDataObj.forecast = [];
-                        forecastResponse.data.forEach((dataPoint, i) => {
-                            if (i < 6) {
-                                const { DateTime, IsDaylight, Temperature, WeatherIcon } = dataPoint;
-                                const { Unit, Value } = Temperature;
-                                const forecastPoint = {
-                                    DateTime: DateTime,
-                                    IsDaylight: IsDaylight,
-                                    Temperature: Temperature,
-                                    WeatherIcon: WeatherIcon,
-                                    Unit: Unit,
-                                    Value: Value,
-                                }
-                                if (i === 0) setUseLightMode(IsDaylight);
-
-                                newDataObj.forecast.push(forecastPoint);
-                            }
-                        });
+                const locationkeyurl = `http://dataservice.accuweather.com/locations/v1/cities/search?apikey=GkTpopNR6k4CajJOGJpgfkrY86BN80Dp&q=${nameKey}`
+                console.log({ newDataObj, nameKey })
+                axios.get(locationkeyurl).then((response2) => {
+                    if (response2?.data) {
+                        console.log({response2})
+                        const { Key } = response2.data[0];
+                        locationKey = Key;
                     } 
-                    setData(newDataObj);
-                    console.log({ newDataObj });
+                    return { newDataObj, locationKey };
+                })
+                .then(({ newDataObj, locationKey }) => { // third data fetch
+                    const forecasturl = `http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/${locationKey}?apikey=GkTpopNR6k4CajJOGJpgfkrY86BN80Dp`
+                    console.log({ newDataObj, locationKey })
+                    axios.get(forecasturl).then((forecastResponse) => {
+                        console.log({ forecastResponse })
+                        if (forecastResponse?.data) {
+
+                            newDataObj.forecast = [];
+                            forecastResponse.data.forEach((dataPoint, i) => {
+                                if (i < 6) {
+                                    const { DateTime, IsDaylight, Temperature, WeatherIcon } = dataPoint;
+                                    const { Unit, Value } = Temperature;
+                                    const forecastPoint = {
+                                        DateTime: DateTime,
+                                        IsDaylight: IsDaylight,
+                                        Temperature: Temperature,
+                                        WeatherIcon: WeatherIcon,
+                                        Unit: Unit,
+                                        Value: Value,
+                                    }
+                                    if (i === 0) setUseLightMode(IsDaylight);
+
+                                    newDataObj.forecast.push(forecastPoint);
+                                }
+                            });
+                        } 
+                        setData(newDataObj);
+                        console.log({ newDataObj });
+                    })
                 })
             })
-        })
     }
     
 
@@ -201,15 +215,15 @@ const Mainpage = ( { setUseLightMode } ) => {
             <CardContent>
                 <Searcharea>
                     <CustomTextField
-                    id="outlined-secondary"
-                    label="Enter City Name"
-                    variant="outlined"
-                    onChange={event => setLocation(event.target.value)}
-                    value={location}
+                        id="outlined-secondary"
+                        label="Enter City Name"
+                        variant="outlined"
+                        onChange={event => setLocation(event.target.value)}
+                        value={location}
                     />
                     <Submitbutton
-                    variant="contained"
-                    onClick={handleSearch}
+                        variant="outlined"
+                        onClick={location.length > 0 && handleSearch}
                     >
                         Submit
                     </Submitbutton>

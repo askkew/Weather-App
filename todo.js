@@ -1,10 +1,8 @@
 /**
  * ! THINGS TO DO WITH WEATHER APP
- * TODO: Change background based on IsDayLight variable
  * TODO: precipitation
  * TODO: fix textfield
  * TODO: fix button
- * TODO: separate components
  * 
  * TODO: host on AWS
  * TODO: FIX CORS ISSUE
